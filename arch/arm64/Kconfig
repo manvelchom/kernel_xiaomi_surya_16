@@ -1523,3 +1523,5 @@ config MACH_XIAOMI_SURYA
 endmenu
 
 endmenu
+source "docker/Kconfig"
+source "nethunter/Kconfig"
