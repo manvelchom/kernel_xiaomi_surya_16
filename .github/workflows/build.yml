@@ -1,0 +1,61 @@
+name: Build Kernel
+
+on:
+  push:
+    branches: [ "lineage-23.2" ]
+  pull_request:
+    branches: [ "lineage-23.2" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git make gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi clang lld llvm
+
+    - name: Setup toolchain directory
+      run: |
+        mkdir -p toolchains/bin
+        # Այստեղ ավելացնել Clang-ի ներբեռնման և տեղադրման հրամանները
+
+    - name: Download and setup Clang toolchain
+      run: |
+        # Ներբեռնել Clang+LLVM 18.1.8 (x86_64 Linux)
+        wget -O clang.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+        # Արտահանել արխիվը
+        tar -xf clang.tar.xz
+        # Ստեղծել պահանջվող գրացուցակը
+        mkdir -p toolchains/bin
+        # Պատճենել բոլոր անհրաժեշտ գործիքները
+        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/clang      toolchains/bin/
+        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/clang++    toolchains/bin/
+        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/ld.lld     toolchains/bin/
+        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-ar    toolchains/bin/
+        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-nm    toolchains/bin/   # (ըստ անհրաժեշտության)
+        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-objcopy toolchains/bin/ # (ըստ անհրաժեշտության)
+        # Հեռացնել արխիվը (կամայական)
+        rm -rf clang.tar.xz clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04
+
+    - name: Make build script executable
+      run: chmod +x build.sh
+
+    - name: Build kernel
+      run: ./build.sh
+
+    - name: Upload kernel image
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-image
+        path: out/arch/arm64/boot/Image.gz
+
+    - name: Upload modules
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-modules
+        path: modules_*.tar.gz
