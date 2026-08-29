@@ -26,21 +26,14 @@ jobs:
 
     - name: Download and setup Clang toolchain
       run: |
-        # Ներբեռնել Clang+LLVM 18.1.8 (x86_64 Linux)
-        wget -O clang.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz
-        # Արտահանել արխիվը
+        wget -O clang.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.7/clang+llvm-19.1.7-x86_64-linux-gnu-ubuntu-22.04.tar.xz
         tar -xf clang.tar.xz
-        # Ստեղծել պահանջվող գրացուցակը
         mkdir -p toolchains/bin
-        # Պատճենել բոլոր անհրաժեշտ գործիքները
-        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/clang      toolchains/bin/
-        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/clang++    toolchains/bin/
-        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/ld.lld     toolchains/bin/
-        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-ar    toolchains/bin/
-        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-nm    toolchains/bin/   # (ըստ անհրաժեշտության)
-        cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-objcopy toolchains/bin/ # (ըստ անհրաժեշտության)
-        # Հեռացնել արխիվը (կամայական)
-        rm -rf clang.tar.xz clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04
+        cp clang+llvm-19.1.7-x86_64-linux-gnu-ubuntu-22.04/bin/clang      toolchains/bin/
+        cp clang+llvm-19.1.7-x86_64-linux-gnu-ubuntu-22.04/bin/clang++    toolchains/bin/
+        cp clang+llvm-19.1.7-x86_64-linux-gnu-ubuntu-22.04/bin/ld.lld     toolchains/bin/
+        cp clang+llvm-19.1.7-x86_64-linux-gnu-ubuntu-22.04/bin/llvm-ar    toolchains/bin/
+        rm -rf clang.tar.xz clang+llvm-19.1.7-x86_64-linux-gnu-ubuntu-22.04
 
     - name: Make build script executable
       run: chmod +x build.sh
